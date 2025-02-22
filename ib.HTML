@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offres d'emploi</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        
+            
+        
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 20px;
+           background: linear-gradient(22deg, white,rgb(36, 35, 35),rgb(95, 95, 158));
+        }
+        img{
+            width: 200PX;
+            height: 100PX;
+            margin-right: 85%;
+        }
+        h1{
+            color: #3498db;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+        }
+        .a {
+            text-align: center; 
+           
+            background-color: white;
+        }
+        .b {
+           
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .c {
+            background-color: white;
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+        .d {
+           
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .d:hover {
+            transform: translateY(-2px);
+        }
+        .e {
+            background: #fff;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+            display: none;
+        }
+        form {
+            display: grid;
+            gap: 10px;
+            width: 500px;
+        }
+        input, textarea, select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .f {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #e70826;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <HEader>
+        
+    </HEader>
+    <div class="a">
+        <img src="logo.png" alt="">
+        <h1>DigitalSphere</h1>
+        <p>Plateforme d'emplois au Sénégal</p>
+        <div class="b">
+            Visites totales: <span id="h">0</span> | 
+            Visites session: <span id="i">0</span>
+        </div>
+        <button id="j">Espace Admin</button>
+    </div>
+    
+    <div class="e" id="k">
+        <h2>Espace Administrateur</h2>
+        <form id="l">
+            <input type="text" id="m" placeholder="Titre de l'annonce" required>
+            <textarea id="n" placeholder="Description" required></textarea>
+            <select id="o" required>
+                <option value="">Choisir une catégorie</option>
+                <option>Développeur</option>
+                <option>Designer</option>
+                <option>Réseau</option>
+            </select>
+            <input type="url" id="p" placeholder="URL de l'image (optionnel)">
+            <button type="submit">Publier l'annonce</button>
+        </form>
+    </div>
+    
+    <div class="filter">
+        <select id="q">
+            <option value="all">Toutes les catégories</option>
+            <option>Développeur</option>
+            <option>Designer</option>
+            <option>Réseau</option>
+        </select>
+    </div>
+    
+    <div class="c" id="r"></div>
+    
+    <script>
+        $(document).ready(function() {
+            if (!localStorage.getItem('h')) localStorage.setItem('h', 0);
+            if (!sessionStorage.getItem('i')) sessionStorage.setItem('i', 0);
+            
+            localStorage.h = +localStorage.h + 1;
+            sessionStorage.i = +sessionStorage.i + 1;
+            
+            $('#h').text(localStorage.h);
+            $('#i').text(sessionStorage.i);
+            
+            let s = JSON.parse(localStorage.getItem('s')) || [];
+            
+            function t(u = 'all') {
+                let v = u === 'all' ? s : s.filter(w => w.category === u);
+                $('#r').html(v.map(w => `
+                    <div class="d">
+                        ${w.image ? `<img src="${w.image}" alt="${w.title}" style="max-width:100%">` : ''}
+                        <h3>${w.title}</h3>
+                        <p>${w.description}</p>
+                        <div style="display:flex; justify-content:space-between; margin-top:15px">
+                            <span class="category">${w.category}</span>
+                        </div>
+                    </div>
+                `).join(''));
+            }
+            
+            $('#l').submit(function(event) {
+                event.preventDefault();
+                let x = {
+                    title: $('#m').val(),
+                    description: $('#n').val(),
+                    category: $('#o').val(),
+                    image: $('#p').val()
+                };
+                s.unshift(x);
+                localStorage.setItem('s', JSON.stringify(s));
+                t();
+                alert('Annonce publiée avec succès !');
+                $('#l')[0].reset();
+            });
+            
+            $('#j').click(function() {
+                let y = prompt('Mot de passe admin :');
+                if (y === 'Recutement@2023') {
+                    $('#k').toggle();
+                } else {
+                    alert('Accès refusé');
+                }
+            });
+            
+            $('#q').change(function() {
+                t($(this).val());
+            });
+            
+            t();
+        });
+    </script>
+</body>
+</html>
